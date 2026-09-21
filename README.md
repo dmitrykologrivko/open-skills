@@ -7,6 +7,11 @@ Universal AI skills for coding agents. Skills stay focused, agent-agnostic, and 
 - `AGENTS.md` contains repository guidance for coding agents.
 - `.agents/skills/` contains portable skills.
 - Each skill lives in its own directory and defines its behavior in `SKILL.md`.
+- `SKILLS.md` contains a human-readable skill catalog.
+
+## Skills
+
+See the [skill catalog](SKILLS.md).
 
 ## How to connect into OpenCode
 
