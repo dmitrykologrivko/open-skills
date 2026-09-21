@@ -13,7 +13,7 @@ Universal AI skills for coding agents. Skills stay focused, agent-agnostic, and 
 
 See the [skill catalog](SKILLS.md).
 
-## How to connect into OpenCode
+## How to connect to OpenCode
 
 OpenCode supports project-local and global configs.
 
