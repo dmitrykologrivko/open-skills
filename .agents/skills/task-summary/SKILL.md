@@ -16,13 +16,19 @@ Use when the user gives a task reference, key, ID, or URL and wants a short task
 7. Reply in `{{response_language}}` using this format:
 
 ```text
-[<reference>] <title>
-Status: <status>
-Goal: <why the task exists>
-Work: <main work>
-Acceptance criteria: <acceptance condition>
-Risks/Blockers: <risks or blockers>
-Link: <task URL>
+📌 [<reference>] <title>
+
+📊 Status: <status>
+
+🎯 Goal: <why the task exists>
+
+🛠️ Work: <main work>
+
+✅ Acceptance criteria: <acceptance condition>
+
+⚠️ Risks/Blockers: <risks or blockers>
+
+🔗 Link: <task URL>
 ```
 
 Omit optional lines when the task has no such data. Keep each line short. Do not include comments, full history, or assumptions.
