@@ -2,6 +2,9 @@
   "project": "default",
   "skills": {
     "commit": {},
-    "hello": {}
+    "hello": {},
+    "task-summary": {
+      "response_language": "English"
+    }
   }
 }
