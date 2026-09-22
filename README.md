@@ -13,6 +13,23 @@ Universal AI skills for coding agents. Skills stay focused, agent-agnostic, and 
 
 See the [skill catalog](SKILLS.md).
 
+## Build Skills
+
+`build.js` makes a project-specific skills directory from the skills in `.agents/skills/`. 
+It replaces `{{variable}}` placeholders with values from a JSON config.
+
+The default `config.json` builds all current skills into `default-skills/`:
+
+```sh
+node build.js
+```
+
+Pass another config file as the first argument when needed:
+
+```sh
+node build.js myproject.config.json
+```
+
 ## How to connect to OpenCode
 
 OpenCode supports project-local and global configs.
@@ -22,7 +39,7 @@ Add this repository's skills directory to the `skills` field in the config:
 {
   "$schema": "https://opencode.ai/config.json",
   "skills": [
-    "~/Developer/open-skills/.agents/skills"
+    "~/Developer/open-skills/default-skills"
   ]
 }
 ```
