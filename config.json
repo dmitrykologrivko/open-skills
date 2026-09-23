@@ -2,6 +2,10 @@
   "project": "default",
   "skills": {
     "commit": {},
+    "commit-preview": {
+      "response_language": "English",
+      "commit_message_language": "English"
+    },
     "hello": {},
     "task-summary": {
       "response_language": "English"
