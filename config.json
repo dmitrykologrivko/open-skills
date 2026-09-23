@@ -2,12 +2,14 @@
   "project": "default",
   "response_language": "English",
   "task_prefix_regexp": "",
-  "base_feature_branch": "dev",
+  "base_feature_branch": "main",
+  "base_hotfix_branch": "main",
   "skills": {
+    "hello": {},
     "commit": {},
     "commit-preview": {},
-    "hello": {},
     "new-feature": {},
+    "new-hotfix": {},
     "task-summary": {}
   }
 }

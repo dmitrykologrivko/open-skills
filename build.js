@@ -78,6 +78,7 @@ function build() {
       response_language: config.response_language ?? '',
       task_prefix_regexp: config.task_prefix_regexp ?? '',
       base_feature_branch: config.base_feature_branch ?? '',
+      base_hotfix_branch: config.base_hotfix_branch ?? '',
       ...skillVariables,
     };
     const rendered = renderSkill(source, variables, skillName);
