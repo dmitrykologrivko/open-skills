@@ -76,6 +76,7 @@ function build() {
     const source = fs.readFileSync(sourcePath, 'utf8');
     const variables = {
       response_language: config.response_language,
+      task_prefix_regexp: config.task_prefix_regexp ?? '',
       ...skillVariables,
     };
     const rendered = renderSkill(source, variables, skillName);

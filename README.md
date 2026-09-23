@@ -17,8 +17,11 @@ See the [skill catalog](SKILLS.md).
 
 `build.js` makes a project-specific skills directory from the skills in `.agents/skills/`.
 It replaces `{{variable}}` placeholders with values from a JSON config.
-`response_language` is global and applies to every skill. A skill can set its
-own `response_language` to override the global value.
+
+| Config value | Scope | Behavior |
+| --- | --- | --- |
+| `response_language` | Global, or per skill | Sets the response language. A skill-level value overrides the global value. |
+| `task_prefix_regexp` | Global, or per skill | Extracts a task prefix from the branch name for `commit`. An empty value disables the prefix. |
 
 The default `config.json` builds all current skills into `default-skills/`:
 

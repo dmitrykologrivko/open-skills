@@ -1,6 +1,7 @@
 {
   "project": "default",
   "response_language": "English",
+  "task_prefix_regexp": "",
   "skills": {
     "commit": {},
     "commit-preview": {},
