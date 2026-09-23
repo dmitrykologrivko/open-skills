@@ -15,8 +15,10 @@ See the [skill catalog](SKILLS.md).
 
 ## Build Skills
 
-`build.js` makes a project-specific skills directory from the skills in `.agents/skills/`. 
+`build.js` makes a project-specific skills directory from the skills in `.agents/skills/`.
 It replaces `{{variable}}` placeholders with values from a JSON config.
+`response_language` is global and applies to every skill. A skill can set its
+own `response_language` to override the global value.
 
 The default `config.json` builds all current skills into `default-skills/`:
 

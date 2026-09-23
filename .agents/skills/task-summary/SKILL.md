@@ -5,6 +5,8 @@ description: Find a task by reference through the connected MCP tracker and retu
 
 # Task Summary
 
+Reply in {{response_language}}.
+
 Use when the user gives a task reference, key, ID, or URL and wants a short task description.
 
 1. Treat the given reference as opaque input.
@@ -13,7 +15,7 @@ Use when the user gives a task reference, key, ID, or URL and wants a short task
 4. Read only the task data needed for the summary. Never create, edit, transition, assign, comment on, or otherwise change a task.
 5. Do not guess missing facts. If no task is found, say `Task not found: <reference>`. If several tasks match, list their references and ask the user to choose.
 6. Keep task keys, IDs, URLs, and exact quoted text unchanged.
-7. Reply in `{{response_language}}` using this format:
+7. Use this format:
 
 ```text
 📌 [<reference>] <title>

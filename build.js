@@ -50,6 +50,9 @@ function build() {
   const config = readConfig();
 
   validateName(config.project, 'project name');
+  if (typeof config.response_language !== 'string' || config.response_language.length === 0) {
+    throw new Error('response_language must be a non-empty string');
+  }
   if (!config.skills || typeof config.skills !== 'object' || Array.isArray(config.skills)) {
     throw new Error('skills must be an object');
   }
@@ -57,9 +60,9 @@ function build() {
   const outputDir = path.join(rootDir, `${config.project}-skills`);
   fs.rmSync(outputDir, { recursive: true, force: true });
 
-  for (const [skillName, variables] of Object.entries(config.skills)) {
+  for (const [skillName, skillVariables] of Object.entries(config.skills)) {
     validateName(skillName, `skill name ${skillName}`);
-    if (!variables || typeof variables !== 'object' || Array.isArray(variables)) {
+    if (!skillVariables || typeof skillVariables !== 'object' || Array.isArray(skillVariables)) {
       throw new Error(`values for skill ${skillName} must be an object`);
     }
 
@@ -71,6 +74,10 @@ function build() {
     const outputSkillDir = path.join(outputDir, skillName);
     fs.mkdirSync(outputSkillDir, { recursive: true });
     const source = fs.readFileSync(sourcePath, 'utf8');
+    const variables = {
+      response_language: config.response_language,
+      ...skillVariables,
+    };
     const rendered = renderSkill(source, variables, skillName);
     fs.writeFileSync(path.join(outputSkillDir, 'SKILL.md'), rendered);
   }
