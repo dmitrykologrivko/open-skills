@@ -75,8 +75,9 @@ function build() {
     fs.mkdirSync(outputSkillDir, { recursive: true });
     const source = fs.readFileSync(sourcePath, 'utf8');
     const variables = {
-      response_language: config.response_language,
+      response_language: config.response_language ?? '',
       task_prefix_regexp: config.task_prefix_regexp ?? '',
+      base_feature_branch: config.base_feature_branch ?? '',
       ...skillVariables,
     };
     const rendered = renderSkill(source, variables, skillName);

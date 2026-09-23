@@ -2,10 +2,12 @@
   "project": "default",
   "response_language": "English",
   "task_prefix_regexp": "",
+  "base_feature_branch": "dev",
   "skills": {
     "commit": {},
     "commit-preview": {},
     "hello": {},
+    "new-feature": {},
     "task-summary": {}
   }
 }
