@@ -14,7 +14,9 @@
     },
     "new-feature": {},
     "new-hotfix": {},
-    "pr-feedback": {},
+    "pr-feedback": {
+      "possible_answer_language": "English"
+    },
     "task-summary": {}
   }
 }

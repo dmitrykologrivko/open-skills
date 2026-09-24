@@ -20,7 +20,7 @@ Use this skill when the user gives a pull request reference, a review comment re
 5. Analyze only open or unresolved review comments. Skip comments marked resolved, closed, dismissed, or otherwise inactive. If a comment has no status, do not assume that it is open; report it as skipped with unknown status. Also skip approvals and comments that do not ask for a change, but count all skipped comments.
 6. Analyze every remaining review question against the code in the checked-out branch. Read the referenced file and surrounding code, then inspect related code or tests when needed. Compare each finding with the linked task description and acceptance criteria, especially the acceptance criteria. State whether the requested change supports, conflicts with, or is outside the task. Do not judge a comment from its wording alone.
 7. Stay neutral. Do not take the reviewer's side or the developer's side. Judge the situation independently and rationally from the code, task context, acceptance criteria, and observable facts. Separate facts from assumptions, and say when the available evidence is not enough.
-8. Classify each comment as `valid`, `already fixed`, `not applicable`, `overrated`, or `needs clarification`. Use `overrated` when the concern is partly valid but the comment describes its impact or urgency too strongly. For each one, explain the finding in plain language, point to the relevant file and line when possible, state what change would address it when the finding is valid, and draft a short possible answer to the reviewer.
+8. Classify each comment as `valid`, `already fixed`, `not applicable`, `overrated`, or `needs clarification`. Use `overrated` when the concern is partly valid but the comment describes its impact or urgency too strongly. For each one, explain the finding in plain language, point to the relevant file and line when possible, state what change would address it when the finding is valid, and draft a short possible answer to the reviewer in {{possible_answer_language}}.
 9. After the analysis, ask the user what to do with the valid findings. Offer: fix all valid findings, fix selected findings, or do nothing. Do not edit files until the user chooses.
 10. If the user approves fixes, make only the approved changes and report what changed. Do not commit, push, or change pull request comments.
 
@@ -41,7 +41,7 @@ Use this report format:
 
 🛠️ Action: <suggested fix or why no fix is needed>
 
-💡 Possible answer: <short answer to the reviewer>
+💡 Possible answer: <short answer to the reviewer in {{possible_answer_language}}>
 
 📋 Summary: <number of open comments analyzed and comments skipped by status or type>
 ```
