@@ -15,8 +15,23 @@ See the [skill catalog](SKILLS.md).
 
 ## Build Skills
 
-`build.js` makes a project-specific skills directory from the skills in `.agents/skills/`.
-It replaces `{{variable}}` placeholders with values from a JSON config.
+The building of the skills makes a project-specific skills directory from `.agents/skills/`.
+
+To build skills with the default `config.json` run the following command:
+
+```sh
+node build.js
+```
+
+Pass another config file as the first argument when needed:
+
+```sh
+node build.js myproject.config.json
+```
+
+### Skill Placeholders
+
+While building skills, it replaces `{{variable}}` placeholders with values from a config.
 
 | Config value | Scope | Behavior |
 | --- | --- | --- |
@@ -27,16 +42,24 @@ It replaces `{{variable}}` placeholders with values from a JSON config.
 | `commit_language` | `commit` and `commit-preview` only | Sets the language of the generated commit message. |
 | `possible_answer_language` | `pr-feedback` only | Sets the language of the suggested answer to a reviewer. |
 
-The default `config.json` builds all current skills into `default-skills/`:
+### External Skills
 
-```sh
-node build.js
+While building skills, it can use a remote Git repository to download provided skill and save it to the build directory.
+
 ```
-
-Pass another config file as the first argument when needed:
-
-```sh
-node build.js myproject.config.json
+{
+  ...
+  "external_skills": [
+    {
+      "repository": "https://github.com/user/skills.git",
+      "ref": "main",
+      "skills": {
+        "cool-skill": "skills/cool-skill"
+      }
+    }
+  ],
+  ...
+}
 ```
 
 ## How to connect to OpenCode

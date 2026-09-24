@@ -4,6 +4,7 @@
   "task_prefix_regexp": "",
   "base_feature_branch": "main",
   "base_hotfix_branch": "main",
+  "external_skills": [],
   "skills": {
     "hello": {},
     "commit": {
