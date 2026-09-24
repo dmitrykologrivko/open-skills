@@ -21,7 +21,7 @@ Use this format:
 ```text
 Changes: <file count> files, +<added lines> lines, -<removed lines> lines
 Summary: <short description of what was done>
-Commit: <short imperative message>
+Commit: <short imperative message in {{commit_language}}>
 ```
 
 If there is no staged or unstaged diff, say it to the user. Do not invent a commit message.

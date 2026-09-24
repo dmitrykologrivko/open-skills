@@ -24,6 +24,7 @@ It replaces `{{variable}}` placeholders with values from a JSON config.
 | `task_prefix_regexp` | Global, or per skill | Matches and extracts a task identifier. An empty value disables task-prefix handling. |
 | `base_feature_branch` | Global, or per skill | Branch to update and use as the parent for a new branch. |
 | `base_hotfix_branch` | Global, or per skill | Branch to update and use as the parent for a new hotfix branch. |
+| `commit_language` | `commit` and `commit-preview` only | Sets the language of the generated commit message. |
 
 The default `config.json` builds all current skills into `default-skills/`:
 

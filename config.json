@@ -6,8 +6,12 @@
   "base_hotfix_branch": "main",
   "skills": {
     "hello": {},
-    "commit": {},
-    "commit-preview": {},
+    "commit": {
+      "commit_language": "English"
+    },
+    "commit-preview": {
+      "commit_language": "English"
+    },
     "new-feature": {},
     "new-hotfix": {},
     "pr-feedback": {},

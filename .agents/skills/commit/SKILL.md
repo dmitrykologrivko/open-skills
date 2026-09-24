@@ -11,7 +11,7 @@ Create a commit from the current Git diff.
 
 1. Read the project instructions and Git policy first. If they prohibit an AI agent from creating commits, do not run `git commit`. Output only the proposed commit message.
 2. Run `git diff` and `git diff --cached`. Treat staged and unstaged changes as one change set. If there is no diff, say about it and stop.
-3. Generate one short imperative commit message from the diff. Use simple words. No body.
+3. Generate one short imperative commit message from the diff in {{commit_language}}. Use simple words. No body.
 4. If a task prefix regexp is configured (value: `{{task_prefix_regexp}}`), run `git branch --show-current` and apply it to the branch name. Use the first non-empty capture group when one exists; otherwise use the full first match. If it matches, put the prefix on its own first line, add one space, then put the generated message. If it does not match, use only the generated message.
 5. Show or retain the exact final commit message. If the user included `--no-verify`, run `git commit --no-verify` with that message. Otherwise run `git commit` normally.
 6. On success, report that the commit was created and include the final commit message.
