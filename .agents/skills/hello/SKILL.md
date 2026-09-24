@@ -1,5 +1,5 @@
 ---
-name: hello
+name: open-skills:hello
 description: A minimal test skill that greets the user.
 ---
 

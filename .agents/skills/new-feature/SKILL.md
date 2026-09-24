@@ -1,5 +1,5 @@
 ---
-name: new-feature
+name: open-skills:new-feature
 description: Create a new feature branch from an updated base branch using a task from the task tracker.
 ---
 

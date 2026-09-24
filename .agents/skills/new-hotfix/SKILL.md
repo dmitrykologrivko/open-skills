@@ -1,5 +1,5 @@
 ---
-name: new-hotfix
+name: open-skills:new-hotfix
 description: Create a new hotfix branch from an updated hotfix base branch using a task from the task tracker.
 ---
 

@@ -1,5 +1,5 @@
 ---
-name: commit
+name: open-skills:commit
 description: Create a commit from the current Git diff, or show the message when commits are prohibited.
 ---
 
