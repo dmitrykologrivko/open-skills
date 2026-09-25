@@ -1,5 +1,5 @@
 ---
-name: open-skills:start-implementation
+name: open-skills:implement-task
 description: Start implementing the current task on the current branch right away.
 ---
 

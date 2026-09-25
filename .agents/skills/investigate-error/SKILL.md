@@ -1,5 +1,5 @@
 ---
-name: open-skills:error-investigation
+name: open-skills:investigate-error
 description: Investigate crashes from a stack trace or an error-monitoring MCP reference; use diagnostic red/green tests and report evidence, root cause, impact, counts, and fix priority without applying production fixes.
 ---
 

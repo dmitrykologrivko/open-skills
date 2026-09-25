@@ -6,20 +6,20 @@
   "base_hotfix_branch": "main",
   "external_skills": [],
   "skills": {
-    "hello": {},
-    "commit": {
+    "say-hello": {},
+    "create-commit": {
       "commit_language": "English"
     },
-    "commit-preview": {
+    "preview-commit": {
       "commit_language": "English"
     },
-    "new-feature": {},
-    "new-hotfix": {},
-    "start-implementation": {},
-    "pr-feedback": {
+    "create-feature-branch": {},
+    "create-hotfix-branch": {},
+    "implement-task": {},
+    "analyze-pr-feedback": {
       "possible_answer_language": "English"
     },
-    "task-summary": {},
-    "error-investigation": {}
+    "explain-task": {},
+    "investigate-error": {}
   }
 }

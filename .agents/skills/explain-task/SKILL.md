@@ -1,5 +1,5 @@
 ---
-name: open-skills:task-summary
+name: open-skills:explain-task
 description: Find a task by reference through the connected MCP tracker and explain it in clear, plain language.
 ---
 

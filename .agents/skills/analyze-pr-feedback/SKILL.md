@@ -1,5 +1,5 @@
 ---
-name: open-skills:pr-feedback
+name: open-skills:analyze-pr-feedback
 description: Analyze pull request review comments against the checked-out code and ask before making fixes.
 ---
 

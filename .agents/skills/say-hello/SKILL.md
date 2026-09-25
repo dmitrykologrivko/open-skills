@@ -1,5 +1,5 @@
 ---
-name: open-skills:hello
+name: open-skills:say-hello
 description: A minimal test skill that greets the user.
 ---
 

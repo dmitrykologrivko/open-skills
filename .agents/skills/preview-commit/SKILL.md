@@ -1,5 +1,5 @@
 ---
-name: open-skills:commit-preview
+name: open-skills:preview-commit
 description: Show a short change summary and proposed commit message from the current Git diff without committing.
 ---
 
