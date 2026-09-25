@@ -3,7 +3,7 @@ name: open-skills:error-investigation
 description: Investigate crashes from a stack trace or an error-monitoring MCP reference; use diagnostic red/green tests and report evidence, root cause, impact, counts, and fix priority without applying production fixes.
 ---
 
-# Crash Investigation
+# Error Investigation
 
 Reply in {{response_language}}. Keep evidence labels in English.
 
@@ -73,9 +73,14 @@ Use short sections. Apply evidence labels to each claim or table value, not one 
 
 Render the report as Markdown, not a code block. Keep the section emojis below. Use `✅ Confirmed`, `🔎 Deduced`, and `💭 Hypothesized` for claims; use `❔ Unavailable` for missing data. Keep labels as text, not emojis alone. Use short bullets, bold key findings, and a table for counts. Translate headings to the response language.
 
+In **In plain words**, explain the problem like for a person with no tech knowledge. Use short, common words. Say what was meant to happen, what went wrong, and what that means in practice. Explain why only if evidence supports it; say when the cause is not known. Use no tech terms, code names, or acronyms. Keep evidence labels and citations.
+
 ```text
 ## 📌 Summary
 <what happened; error type; crash/handled/request failure; evidence labels and citations>
+
+## 💬 In plain words
+<what should happen; what went wrong; what it means in practice; why, if known; no tech terms; evidence labels and citations>
 
 ## 🗂️ Scope and evidence
 <issue/event links; sampled events; environment; release; deployed/local revision; limits>
