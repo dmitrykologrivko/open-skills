@@ -11,4 +11,5 @@ skill's `SKILL.md` frontmatter as the machine-readable catalog.
 | `commit-preview` | Show a short change summary and proposed commit message from the current Git diff without committing. | [`.agents/skills/commit-preview/SKILL.md`](.agents/skills/commit-preview/SKILL.md) |
 | `new-feature` | Create a new feature branch from an updated base branch using a task from the task tracker. | [`.agents/skills/new-feature/SKILL.md`](.agents/skills/new-feature/SKILL.md) |
 | `new-hotfix` | Create a new hotfix branch from an updated hotfix base branch using a task from the task tracker. | [`.agents/skills/new-hotfix/SKILL.md`](.agents/skills/new-hotfix/SKILL.md) |
+| `start-implementation` | Start implementing the current task on the current branch right away. | [`.agents/skills/start-implementation/SKILL.md`](.agents/skills/start-implementation/SKILL.md) |
 | `pr-feedback` | Analyze pull request review comments against the checked-out code and ask before making fixes. | [`.agents/skills/pr-feedback/SKILL.md`](.agents/skills/pr-feedback/SKILL.md) |
