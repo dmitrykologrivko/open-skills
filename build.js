@@ -44,25 +44,7 @@ function validateRelativePath(value, label) {
   return normalized;
 }
 
-function renderSkill(skillText, variables, skillName) {
-  return skillText.replace(/\{\{\s*([^{}\s]+)\s*\}\}/g, (placeholder, variableName) => {
-    if (!Object.prototype.hasOwnProperty.call(variables, variableName)) {
-      throw new Error(`missing value for {{${variableName}}} in skill ${skillName}`);
-    }
-
-    const value = variables[variableName];
-    if (value === null || value === undefined) {
-      return '';
-    }
-    if (typeof value === 'object') {
-      throw new Error(`value for ${variableName} in skill ${skillName} must be a string, number, or boolean`);
-    }
-
-    return String(value);
-  });
-}
-
-function buildSkill(sourceDir, outputDir, variables, skillName) {
+function buildSkill(sourceDir, outputDir, skillName, transform) {
   fs.cpSync(sourceDir, outputDir, { recursive: true });
 
   const skillPath = path.join(outputDir, 'SKILL.md');
@@ -71,132 +53,201 @@ function buildSkill(sourceDir, outputDir, variables, skillName) {
   }
 
   const source = fs.readFileSync(skillPath, 'utf8');
-  const rendered = renderSkill(source, variables, skillName);
+  const rendered = transform(source);
   fs.writeFileSync(skillPath, rendered);
 }
 
-function namespaceSkillName(skillText, repositoryNamespace, skillName) {
-  const frontmatterMatch = skillText.match(/^(---\r?\n)([\s\S]*?)(\r?\n---)/);
-  if (!frontmatterMatch) {
-    throw new Error(`skill has no frontmatter: ${skillName}`);
+class LocalSkillsBuilder {
+  constructor(config, sourceDir, outputDir) {
+    this.skills = config.skills;
+    this.sourceDir = sourceDir;
+    this.outputDir = outputDir;
+    this.globalVariables = {
+      response_language: config.response_language ?? '',
+      task_prefix_regexp: config.task_prefix_regexp ?? '',
+      base_feature_branch: config.base_feature_branch ?? '',
+      base_hotfix_branch: config.base_hotfix_branch ?? '',
+    };
   }
 
-  const nameLinePattern = /^name:[^\r\n]*(\r?\n|$)/m;
-  if (!nameLinePattern.test(frontmatterMatch[2])) {
-    throw new Error(`skill frontmatter has no name: ${skillName}`);
+  renderSkill(skillText, variables, skillName) {
+    return skillText.replace(/\{\{\s*([^{}\s]+)\s*\}\}/g, (placeholder, variableName) => {
+      if (!Object.prototype.hasOwnProperty.call(variables, variableName)) {
+        throw new Error(`missing value for {{${variableName}}} in skill ${skillName}`);
+      }
+
+      const value = variables[variableName];
+      if (value === null || value === undefined) {
+        return '';
+      }
+      if (typeof value === 'object') {
+        throw new Error(`value for ${variableName} in skill ${skillName} must be a string, number, or boolean`);
+      }
+
+      return String(value);
+    });
   }
 
-  const namespacedName = `${repositoryNamespace}:${skillName}`;
-  const frontmatter = frontmatterMatch[2].replace(
-    nameLinePattern,
-    `name: ${namespacedName}$1`,
-  );
-  return `${frontmatterMatch[1]}${frontmatter}${frontmatterMatch[3]}${skillText.slice(frontmatterMatch[0].length)}`;
+  build() {
+    for (const [skillName, skillVariables] of Object.entries(this.skills)) {
+      if (!skillVariables || typeof skillVariables !== 'object' || Array.isArray(skillVariables)) {
+        throw new Error(`values for skill ${skillName} must be an object`);
+      }
+
+      const sourcePath = path.join(this.sourceDir, skillName, 'SKILL.md');
+      if (!fs.existsSync(sourcePath)) {
+        throw new Error(`skill not found: ${skillName}`);
+      }
+
+      const outputSkillDir = path.join(this.outputDir, skillName);
+      fs.mkdirSync(outputSkillDir, { recursive: true });
+      const variables = {
+        ...this.globalVariables,
+        ...skillVariables,
+      };
+      buildSkill(path.dirname(sourcePath), outputSkillDir, skillName,
+        (source) => this.renderSkill(source, variables, skillName));
+    }
+  }
 }
 
-function buildExternalSkill(sourceDir, outputDir, repositoryNamespace, skillName) {
-  fs.cpSync(sourceDir, outputDir, { recursive: true });
-
-  const skillPath = path.join(outputDir, 'SKILL.md');
-  if (!fs.existsSync(skillPath)) {
-    throw new Error(`skill has no SKILL.md: ${skillName}`);
+class ExternalSkillsBuilder {
+  constructor(config, outputDir) {
+    this.repositories = this.readExternalSkills(config);
+    this.outputDir = outputDir;
   }
 
-  const source = fs.readFileSync(skillPath, 'utf8');
-  const namespaced = namespaceSkillName(source, repositoryNamespace, skillName);
-  fs.writeFileSync(skillPath, namespaced);
-}
-
-function normalizeRepository(repository, ref) {
-  const githubMatch = repository.match(
-    /^https:\/\/github\.com\/([^/]+)\/([^/]+?)(?:\/tree\/([^/]+))?\/?$/,
-  );
-  if (!githubMatch) {
-    return { repository, ref };
-  }
-
-  const repositoryName = githubMatch[2].replace(/\.git$/, '');
-  return {
-    repository: `https://github.com/${githubMatch[1]}/${repositoryName}.git`,
-    ref: ref ?? (githubMatch[3] ? decodeURIComponent(githubMatch[3]) : undefined),
-  };
-}
-
-function getRepositoryNamespace(repository) {
-  const githubMatch = repository.match(/^https:\/\/github\.com\/([^/]+)\/([^/]+?)(?:\.git)?$/);
-  if (!githubMatch) {
-    throw new Error(`external skill repository must be a GitHub repository URL: ${repository}`);
-  }
-
-  return `${githubMatch[1]}-${githubMatch[2]}`;
-}
-
-function readExternalSkills(config) {
-  if (config.external_skills === undefined) {
-    return [];
-  }
-  if (!Array.isArray(config.external_skills)) {
-    throw new Error('external_skills must be an array');
-  }
-
-  return config.external_skills.map((repositoryConfig, repositoryIndex) => {
-    if (!repositoryConfig || typeof repositoryConfig !== 'object' || Array.isArray(repositoryConfig)) {
-      throw new Error(`external_skills[${repositoryIndex}] must be an object`);
-    }
-    if (typeof repositoryConfig.repository !== 'string' || repositoryConfig.repository.length === 0) {
-      throw new Error(`external_skills[${repositoryIndex}].repository must be a non-empty string`);
-    }
-    if (repositoryConfig.ref !== undefined &&
-        (typeof repositoryConfig.ref !== 'string' || repositoryConfig.ref.length === 0)) {
-      throw new Error(`external_skills[${repositoryIndex}].ref must be a non-empty string`);
-    }
-    if (!repositoryConfig.skills || typeof repositoryConfig.skills !== 'object' ||
-        Array.isArray(repositoryConfig.skills)) {
-      throw new Error(`external_skills[${repositoryIndex}].skills must be an object`);
+  normalizeRepository(repository, ref) {
+    const githubMatch = repository.match(
+      /^https:\/\/github\.com\/([^/]+)\/([^/]+?)(?:\/tree\/([^/]+))?\/?$/,
+    );
+    if (!githubMatch) {
+      return { repository, ref };
     }
 
-    const skills = Object.entries(repositoryConfig.skills).map(([name, skillPath]) => {
-      validateName(name, `external skill name ${name}`);
+    const repositoryName = githubMatch[2].replace(/\.git$/, '');
+    return {
+      repository: `https://github.com/${githubMatch[1]}/${repositoryName}.git`,
+      ref: ref ?? (githubMatch[3] ? decodeURIComponent(githubMatch[3]) : undefined),
+    };
+  }
+
+  getRepositoryNamespace(repository) {
+    const githubMatch = repository.match(/^https:\/\/github\.com\/([^/]+)\/([^/]+?)(?:\.git)?$/);
+    if (!githubMatch) {
+      throw new Error(`external skill repository must be a GitHub repository URL: ${repository}`);
+    }
+
+    return `${githubMatch[1]}-${githubMatch[2]}`;
+  }
+
+  namespaceSkillName(skillText, repositoryNamespace, skillName) {
+    const frontmatterMatch = skillText.match(/^(---\r?\n)([\s\S]*?)(\r?\n---)/);
+    if (!frontmatterMatch) {
+      throw new Error(`skill has no frontmatter: ${skillName}`);
+    }
+
+    const nameLinePattern = /^name:[^\r\n]*(\r?\n|$)/m;
+    if (!nameLinePattern.test(frontmatterMatch[2])) {
+      throw new Error(`skill frontmatter has no name: ${skillName}`);
+    }
+
+    const namespacedName = `${repositoryNamespace}:${skillName}`;
+    const frontmatter = frontmatterMatch[2].replace(
+      nameLinePattern,
+      `name: ${namespacedName}$1`,
+    );
+    return `${frontmatterMatch[1]}${frontmatter}${frontmatterMatch[3]}${skillText.slice(frontmatterMatch[0].length)}`;
+  }
+
+  readExternalSkills(config) {
+    if (config.external_skills === undefined) {
+      return [];
+    }
+    if (!Array.isArray(config.external_skills)) {
+      throw new Error('external_skills must be an array');
+    }
+
+    return config.external_skills.map((repositoryConfig, repositoryIndex) => {
+      if (!repositoryConfig || typeof repositoryConfig !== 'object' || Array.isArray(repositoryConfig)) {
+        throw new Error(`external_skills[${repositoryIndex}] must be an object`);
+      }
+      if (typeof repositoryConfig.repository !== 'string' || repositoryConfig.repository.length === 0) {
+        throw new Error(`external_skills[${repositoryIndex}].repository must be a non-empty string`);
+      }
+      if (repositoryConfig.ref !== undefined &&
+          (typeof repositoryConfig.ref !== 'string' || repositoryConfig.ref.length === 0)) {
+        throw new Error(`external_skills[${repositoryIndex}].ref must be a non-empty string`);
+      }
+      if (!repositoryConfig.skills || typeof repositoryConfig.skills !== 'object' ||
+          Array.isArray(repositoryConfig.skills)) {
+        throw new Error(`external_skills[${repositoryIndex}].skills must be an object`);
+      }
+
+      const skills = Object.entries(repositoryConfig.skills).map(([name, skillPath]) => {
+        validateName(name, `external skill name ${name}`);
+        return {
+          name,
+          path: validateRelativePath(skillPath, `path for external skill ${name}`),
+        };
+      });
+
+      if (skills.length === 0) {
+        throw new Error(`external_skills[${repositoryIndex}].skills must not be empty`);
+      }
+
+      const normalizedRepository = this.normalizeRepository(
+        repositoryConfig.repository,
+        repositoryConfig.ref,
+      );
       return {
-        name,
-        path: validateRelativePath(skillPath, `path for external skill ${name}`),
+        repository: normalizedRepository.repository,
+        ref: normalizedRepository.ref,
+        namespace: this.getRepositoryNamespace(normalizedRepository.repository),
+        skills,
       };
     });
+  }
 
-    if (skills.length === 0) {
-      throw new Error(`external_skills[${repositoryIndex}].skills must not be empty`);
+  cloneRepository(repository, ref) {
+    const checkoutDir = fs.mkdtempSync(path.join(os.tmpdir(), 'open-skills-'));
+    const args = ['clone', '--depth', '1', '--quiet'];
+    if (ref) {
+      args.push('--branch', ref);
+    }
+    args.push(repository, checkoutDir);
+
+    try {
+      execFileSync('git', args, { stdio: ['ignore', 'pipe', 'pipe'], encoding: 'utf8' });
+    } catch (error) {
+      const details = error.stderr?.trim() || error.message;
+      fs.rmSync(checkoutDir, { recursive: true, force: true });
+      throw new Error(`cannot clone external skill repository ${repository}: ${details}`);
     }
 
-    const normalizedRepository = normalizeRepository(
-      repositoryConfig.repository,
-      repositoryConfig.ref,
-    );
-    return {
-      repository: normalizedRepository.repository,
-      ref: normalizedRepository.ref,
-      namespace: getRepositoryNamespace(normalizedRepository.repository),
-      skills,
-    };
-  });
-}
-
-function cloneRepository(repository, ref) {
-  const checkoutDir = fs.mkdtempSync(path.join(os.tmpdir(), 'open-skills-'));
-  const args = ['clone', '--depth', '1', '--quiet'];
-  if (ref) {
-    args.push('--branch', ref);
-  }
-  args.push(repository, checkoutDir);
-
-  try {
-    execFileSync('git', args, { stdio: ['ignore', 'pipe', 'pipe'], encoding: 'utf8' });
-  } catch (error) {
-    const details = error.stderr?.trim() || error.message;
-    fs.rmSync(checkoutDir, { recursive: true, force: true });
-    throw new Error(`cannot clone external skill repository ${repository}: ${details}`);
+    return checkoutDir;
   }
 
-  return checkoutDir;
+  build() {
+    for (const repositoryConfig of this.repositories) {
+      const checkoutDir = this.cloneRepository(repositoryConfig.repository, repositoryConfig.ref);
+      try {
+        for (const { name, path: skillPath } of repositoryConfig.skills) {
+          const sourceDir = path.join(checkoutDir, skillPath);
+          if (!fs.existsSync(sourceDir) || !fs.statSync(sourceDir).isDirectory()) {
+            throw new Error(`external skill path is not a directory: ${repositoryConfig.repository}/${skillPath}`);
+          }
+
+          const outputSkillDir = path.join(this.outputDir, name);
+          fs.mkdirSync(outputSkillDir, { recursive: true });
+          buildSkill(sourceDir, outputSkillDir, name,
+            (source) => this.namespaceSkillName(source, repositoryConfig.namespace, name));
+        }
+      } finally {
+        fs.rmSync(checkoutDir, { recursive: true, force: true });
+      }
+    }
+  }
 }
 
 function build() {
@@ -210,7 +261,8 @@ function build() {
     throw new Error('skills must be an object');
   }
 
-  const externalRepositories = readExternalSkills(config);
+  const outputDir = path.join(rootDir, `${config.project}-skills`);
+  const externalBuilder = new ExternalSkillsBuilder(config, outputDir);
   const selectedSkillNames = new Set();
 
   // Local skills
@@ -220,7 +272,7 @@ function build() {
   }
 
   // External skills
-  for (const repositoryConfig of externalRepositories) {
+  for (const repositoryConfig of externalBuilder.repositories) {
     for (const { name } of repositoryConfig.skills) {
       if (selectedSkillNames.has(name)) {
         throw new Error(`skill selected more than once: ${name}`);
@@ -229,52 +281,10 @@ function build() {
     }
   }
 
-  const outputDir = path.join(rootDir, `${config.project}-skills`);
   fs.rmSync(outputDir, { recursive: true, force: true });
 
-  const globalVariables = {
-    response_language: config.response_language ?? '',
-    task_prefix_regexp: config.task_prefix_regexp ?? '',
-    base_feature_branch: config.base_feature_branch ?? '',
-    base_hotfix_branch: config.base_hotfix_branch ?? '',
-  };
-
-  for (const [skillName, skillVariables] of Object.entries(config.skills)) {
-    if (!skillVariables || typeof skillVariables !== 'object' || Array.isArray(skillVariables)) {
-      throw new Error(`values for skill ${skillName} must be an object`);
-    }
-
-    const sourcePath = path.join(skillsDir, skillName, 'SKILL.md');
-    if (!fs.existsSync(sourcePath)) {
-      throw new Error(`skill not found: ${skillName}`);
-    }
-
-    const outputSkillDir = path.join(outputDir, skillName);
-    fs.mkdirSync(outputSkillDir, { recursive: true });
-    const variables = {
-      ...globalVariables,
-      ...skillVariables,
-    };
-    buildSkill(path.dirname(sourcePath), outputSkillDir, variables, skillName);
-  }
-
-  for (const repositoryConfig of externalRepositories) {
-    const checkoutDir = cloneRepository(repositoryConfig.repository, repositoryConfig.ref);
-    try {
-      for (const { name, path: skillPath } of repositoryConfig.skills) {
-        const sourceDir = path.join(checkoutDir, skillPath);
-        if (!fs.existsSync(sourceDir) || !fs.statSync(sourceDir).isDirectory()) {
-          throw new Error(`external skill path is not a directory: ${repositoryConfig.repository}/${skillPath}`);
-        }
-
-        const outputSkillDir = path.join(outputDir, name);
-        fs.mkdirSync(outputSkillDir, { recursive: true });
-        buildExternalSkill(sourceDir, outputSkillDir, repositoryConfig.namespace, name);
-      }
-    } finally {
-      fs.rmSync(checkoutDir, { recursive: true, force: true });
-    }
-  }
+  new LocalSkillsBuilder(config, skillsDir, outputDir).build();
+  externalBuilder.build();
 
   console.log(`Built ${selectedSkillNames.size} skill(s) in ${outputDir}`);
 }
