@@ -19,6 +19,7 @@
     "pr-feedback": {
       "possible_answer_language": "English"
     },
-    "task-summary": {}
+    "task-summary": {},
+    "error-investigation": {}
   }
 }
