@@ -59,11 +59,11 @@ Give evidence short IDs when useful. Keep labels exact. Missing data is `Unavail
    - Report missing harness/tools or failed reproduction explicitly. Stop only servers and browser sessions started for this investigation; preserve existing user sessions and data. List retained artifacts and diagnostic files.
 
 8. **Count occurrences.** When MCP data permits, get totals for trailing **90 days, 14 days, 7 days, and 24 hours**. Use one as-of time `T`, one explicit timezone (prefer UTC), and windows `[T - duration, T)`. Keep issue/project/environment and event-type filters consistent; record them with the query source. Use aggregate totals or complete pagination, not the size of a sample page. The windows overlap; do not sum them.
-   - Report crash counts only if fatal/crash classification supports them. Otherwise label the metric as error events; crash counts stay unavailable. Keep unique users/sessions separate from occurrences. Do not equate crashes with users.
+   - Report crash counts only if fatal/crash classification supports them. Otherwise label the metric as error events; crash counts stay unavailable.
    - State sampling, retention, truncation, grouping changes, deduplication, and partial coverage when known. Label estimates and observed lower bounds. Do not extrapolate partial counts into exact totals. Use `0` only for a complete query with no matches; missing access or retention is not zero.
    - If variants have distinct causes, show the group scope and any supported per-variant counts. Do not assign all group events to the sampled cause. Do not claim a trend from overlapping totals alone; use comparable time buckets and traffic rates when available.
 
-9. **Assess impact and priority.** State the failed user/system operation, scope, recovery or retry path, affected releases/environments, and any observed downstream effect. Separate actual loss/outage from possible effects. Assess frequency, recency, affected users, critical path, data loss, workaround, and crash rate when a valid denominator exists. Use the project's priority scheme if known; otherwise use `P0` ongoing broad outage or data loss, `P1` severe active impact on a critical flow, `P2` limited impact with recovery, `P3` low-impact edge case. These are proposed priorities, not platform facts. Explain evidence and missing inputs; use `Undetermined` if evidence cannot support a level. Do not assign urgency from raw count alone. Say when no fix is indicated and why.
+9. **Assess impact and priority.** State the failed operation, scope, recovery or retry path, affected releases/environments, and any observed downstream effect. Separate actual loss/outage from possible effects. Assess frequency, recency, critical path, data loss, workaround, and crash rate when a valid denominator exists. Use the project's priority scheme if known; otherwise use `P0` ongoing broad outage or data loss, `P1` severe active impact on a critical flow, `P2` limited impact with recovery, `P3` low-impact edge case. These are proposed priorities, not platform facts. Explain evidence and missing inputs; use `Undetermined` if evidence cannot support a level. Do not assign urgency from raw count alone. Say when no fix is indicated and why.
 
 10. **Report and stop.** Give findings, a proposed fix direction if supported, and the smallest next checks that would close gaps. Any experimental fix stays in the isolated copy; applying it to the project needs a separate user request.
 
@@ -103,7 +103,7 @@ As of: <T and timezone>. Scope: <filters>. Metric: <crashes or error events>.
 | 14 days | ... | ... |
 | 7 days | ... | ... |
 | 24 hours | ... | ... |
-<affected users/sessions and rates only if available; data limits>
+<rates only if available; data limits>
 
 ## 🚦 Impact and fix priority
 <observed effects vs possible effects; proposed priority or Undetermined; labeled rationale>
