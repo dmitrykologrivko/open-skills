@@ -7,4 +7,4 @@ description: Start implementing the current task on the current branch right awa
 
 Reply in {{response_language}}.
 
-Start implementing the current task on the current branch right away.
+Start implementing the current task or the fix on the current branch right away.
