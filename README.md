@@ -40,6 +40,7 @@ While building skills, it replaces `{{variable}}` placeholders with values from 
 | `base_feature_branch` | Global, or per skill | Branch to update and use as the parent for a new branch. |
 | `base_hotfix_branch` | Global, or per skill | Branch to update and use as the parent for a new hotfix branch. |
 | `feature_branch_prefix` | `create-feature-branch` only | Branch prefix. Use `feature/` for Gitflow. Include the separator. Empty or omitted means no prefix. |
+| `hotfix_branch_prefix` | `create-hotfix-branch` only | Branch prefix. Use `hotfix/` for Gitflow. Include the separator. Set an empty string for no prefix. |
 | `commit_language` | `create-commit` and `preview-commit` only | Sets the language of the generated commit message. |
 | `possible_answer_language` | `analyze-pr-feedback` only | Sets the language of the suggested answer to a reviewer. |
 

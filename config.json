@@ -16,7 +16,9 @@
     "create-feature-branch": {
       "feature_branch_prefix": "feature/"
     },
-    "create-hotfix-branch": {},
+    "create-hotfix-branch": {
+      "hotfix_branch_prefix": "hotfix/"
+    },
     "implement-task": {},
     "analyze-pr-feedback": {
       "possible_answer_language": "English"
