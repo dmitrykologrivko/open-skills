@@ -7,7 +7,11 @@ description: Show a short change summary and proposed commit message from the cu
 
 Reply in {{response_language}}.
 
-Run `git diff` and `git diff --cached`.
+Run `git diff`, `git diff --cached`, and `git status --short`.
+
+Treat current files and diffs as the source of truth. If prior agent edits are known in this session, check for a mismatch: changed content, added files, or removed files. Do not assume who made the change. If no prior state is known, use the current state; do not invent a mismatch.
+If a mismatch is found, name the files and briefly explain what differs. Ask whether to preview the current changes or take another user-specified action, then stop. Do this even if the diff is empty. This takes precedence over the normal output format. If the user accepts the current state, reread the diff and use it for the preview.
+Do not edit, restore, delete, recreate, reset, or stash files to match earlier agent output or a preferred result. A preview request grants no permission to change files.
 
 Read both unstaged and staged changes. Treat them as one change set.
 Use `git diff --name-only`, `git diff --cached --name-only`, `git diff --numstat`, and `git diff --cached --numstat` to calculate the change stats. Count each changed file once, even if it has both staged and unstaged changes. Sum numeric additions and deletions. Count binary files but do not include them in line totals.
