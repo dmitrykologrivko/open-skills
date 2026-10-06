@@ -13,7 +13,9 @@
     "preview-commit": {
       "commit_language": "English"
     },
-    "create-feature-branch": {},
+    "create-feature-branch": {
+      "feature_branch_prefix": "feature/"
+    },
     "create-hotfix-branch": {},
     "implement-task": {},
     "analyze-pr-feedback": {
