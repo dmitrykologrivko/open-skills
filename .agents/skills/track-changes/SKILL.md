@@ -32,7 +32,12 @@ Watched paths, one per line:
 📁 <watched path>
 - <plain-language key change>
   👤 <author> · <short-hash> <commit subject>
+  
+- <plain-language key change>
+  👤 <author> · <short-hash> <commit subject>
 ```
+
+Put one blank line after every change block (the `-` line plus its 👤 line). Separate consecutive changes and consecutive paths with exactly one empty line.
 
 Leave out a path with no key changes. If nothing changed anywhere, say so.
 

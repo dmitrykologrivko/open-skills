@@ -86,8 +86,8 @@ class LocalSkillsBuilder {
           if (entry !== null && typeof entry === 'object') {
             throw new Error(`array value for ${variableName} in skill ${skillName} must contain only strings, numbers, or booleans`);
           }
-          return entry === null || entry === undefined ? '' : String(entry);
-        }).join('\n');
+          return entry === null || entry === undefined ? '' : `"${String(entry)}"`;
+        }).join(', ');
       }
 
       if (typeof value === 'object') {
