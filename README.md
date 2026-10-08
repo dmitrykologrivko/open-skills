@@ -43,6 +43,7 @@ While building skills, it replaces `{{variable}}` placeholders with values from 
 | `hotfix_branch_prefix` | `create-hotfix-branch` only | Branch prefix. Use `hotfix/` for Gitflow. Include the separator. Set an empty string for no prefix. |
 | `commit_language` | `create-commit` and `preview-commit` only | Sets the language of the generated commit message. |
 | `possible_answer_language` | `analyze-pr-feedback` only | Sets the language of the suggested answer to a reviewer. |
+| `watch_paths` | `track-changes` only | Array of module or file globs to watch. Rendered as one path per line. |
 
 ### External Skills
 

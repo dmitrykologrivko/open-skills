@@ -24,6 +24,9 @@
       "possible_answer_language": "English"
     },
     "explain-task": {},
-    "investigate-error": {}
+    "investigate-error": {},
+    "track-changes": {
+      "watch_paths": []
+    }
   }
 }

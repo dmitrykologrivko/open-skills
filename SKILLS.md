@@ -14,3 +14,4 @@ skill's `SKILL.md` frontmatter as the machine-readable catalog.
 | `create-hotfix-branch` | Create a new hotfix branch with an optional Gitflow prefix from an updated hotfix base branch using a task from the task tracker. | [`.agents/skills/create-hotfix-branch/SKILL.md`](.agents/skills/create-hotfix-branch/SKILL.md) |
 | `implement-task` | Start implementing the current task on the current branch right away. | [`.agents/skills/implement-task/SKILL.md`](.agents/skills/implement-task/SKILL.md) |
 | `analyze-pr-feedback` | Analyze pull request review comments against the checked-out code and ask before making fixes. | [`.agents/skills/analyze-pr-feedback/SKILL.md`](.agents/skills/analyze-pr-feedback/SKILL.md) |
+| `track-changes` | Report key changes in watched modules or files for the last day, or since Friday on Mondays, with authors and commits. | [`.agents/skills/track-changes/SKILL.md`](.agents/skills/track-changes/SKILL.md) |

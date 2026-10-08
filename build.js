@@ -80,8 +80,18 @@ class LocalSkillsBuilder {
       if (value === null || value === undefined) {
         return '';
       }
+
+      if (Array.isArray(value)) {
+        return value.map((entry) => {
+          if (entry !== null && typeof entry === 'object') {
+            throw new Error(`array value for ${variableName} in skill ${skillName} must contain only strings, numbers, or booleans`);
+          }
+          return entry === null || entry === undefined ? '' : String(entry);
+        }).join('\n');
+      }
+
       if (typeof value === 'object') {
-        throw new Error(`value for ${variableName} in skill ${skillName} must be a string, number, or boolean`);
+        throw new Error(`value for ${variableName} in skill ${skillName} must be a string, number, boolean, or array`);
       }
 
       return String(value);
