@@ -1,33 +1,38 @@
 ---
 name: open-skills:create-commit
-description: Create a commit from the current Git diff, or show the message when commits are prohibited.
+description: Create a commit from selected current changes, or show the message when commits are prohibited.
 ---
 
 # Commit
 
 Reply in {{response_language}}.
 
-Create a commit from the current Git diff.
+Commit all current changes.
 
-1. Read the project instructions and Git policy first. If they prohibit an AI agent from creating commits, do not run `git commit`. Output only the proposed commit message.
-2. Run `git diff`, `git diff --cached`, and `git status --short`. Treat staged and unstaged changes as one change set. Apply the user-edit guard below before proceeding, even if there is no diff. If there is no diff and no mismatch, say about it and stop.
-3. Generate one short imperative commit message from the diff in {{commit_language}}. Use simple words. No body.
-4. If a task prefix regexp is configured (value: `{{task_prefix_regexp}}`), run `git branch --show-current` and apply it to the branch name. Use the first non-empty capture group when one exists; otherwise use the full first match. If it matches, put the prefix on its own first line, add one space, then put the generated message. If it does not match, use only the generated message. If the project defines it its own format for generated message then use it as a first place.
-5. Recheck both diffs and status before staging or committing. If they changed since review, apply the user-edit guard below and stop. Otherwise show or retain the exact final commit message. If the user included `--no-verify`, run `git commit --no-verify` with that message. Otherwise run `git commit` normally.
-6. On success, report that the commit was created and include the final commit message.
+1. Read the project instructions first. If an agent may not create commits, work message-only: never stage or commit.
+2. Run `git status --short`, `git status`, `git diff`, and `git diff --cached`. If a merge, rebase, cherry-pick, or revert is in progress, report a conflict then stop.
+3. If there are no changes, say so and stop.
+4. Check the state of the staging area. If there are modified or untracked files that are not yet staged, inform the user and list them. Do not add them automatically. Offer the following options:
 
-## User-Edit Guard
+   * add specific files to the current staging area;
+   * add all detected changes;
+   * proceed with the commit using only the changes already staged;
+   * cancel the commit.
 
-Treat current files and diffs as the source of truth. If prior agent edits are known in this session, check for a mismatch: changed content, added files, or removed files. Do not assume who made the change. If no prior state is known, use the current state; do not invent a mismatch.
-If a mismatch is found, name the files and briefly explain what differs. Ask whether to proceed with the current changes or take another user-specified action. Stop before staging, committing, or giving a final commit message. This takes precedence over the normal output format.
-Do not edit, restore, delete, recreate, reset, or stash files to match earlier agent output or a preferred result. Permission to create a commit is not permission to undo user edits. Change files only when the user explicitly asks for that change. If the user accepts the current state, reread the diff and use it for the message and commit.
+   Wait for the user's choice before running `git add`.
+5. Write one short imperative message for all changes in {{commit_language}}. Use `git diff --cached` after staging, or the full working-tree changes in message-only mode. No body.
+6. If `{{task_prefix_regexp}}` is non-empty, run `git branch --show-current` and prepend the match as `<match> <message>` on one line. A project-defined format wins.
+7. In message-only mode, show the message and stop. Else commit with `git commit -m "<message>"`, adding `--no-verify` only if the user asked.
+8. Run `git log -1 --stat`. Report the commit. If it differs from what was reviewed, report and stop; do not amend.
 
-## Commit Failure
+## Guards
 
-If `git commit` fails, report the error and ask the user to choose one:
+- Never edit file contents, reset, or stash.
+- Do not undo user edits to restore a previous agent result.
 
-1. Retry with `--no-verify`.
-2. Fix the pre-commit hook problem automatically, then retry the commit. If the error is not from a pre-commit hook, say this option is not applicable.
-3. Do nothing.
+If `git commit` fails, report the error and ask:
+* retry with `--no-verify`;
+* fix issues detected by pre-commit hooks (name the cause first; this does not permit disabling hooks);
+* do nothing.
 
-Do not retry or change files until the user chooses. For errors before the commit attempt, report the error only.
+Do not retry or change files until the user chooses. After a fix, reread the diffs and status before retrying.
